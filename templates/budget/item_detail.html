@@ -1,0 +1,46 @@
+{% extends "_admin_base.html" %}
+{% block title %} Budget Detail {% endblock %}
+
+{% block content %}
+    <div class="container-fluid p-0">
+
+        <h1 class="h3 mb-3">Budget: Item Detail</h1>
+
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Item detail</h5>
+                        <div class="float-end">
+                            <div class="col-auto">
+                                <a type="button" class="btn btn-secondary btn-sm" href="{% url "budget:item_list" %}">
+                                    Back to budget
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3><strong>Category: </strong>{{ item.category.name }}</h3>
+                        <p><strong>Concept: </strong>{{ item.concept }}</p>
+                        <p><strong>Amount: </strong>{{ item.amount }}</p>
+                        <p><strong>Is essential?: </strong>
+                            {% if item.is_essential %}
+                                <i class="align-middle" data-feather="check" style="color: #0b4b38"></i>
+                            {% else %}
+                                <i class="align-middle" data-feather="x" style="color: #8e0615"></i>
+                            {% endif %}
+                        </p>
+                        <p><strong>Frequency: </strong>{{ item.frequency }}</p>
+                        <p><strong>Transaction date: </strong>{{ item.transaction_date }}</p>
+                        <p><strong>Created at: </strong>{{ item.created_at }}</p>
+                        <p><strong>Updated at: </strong>{{ item.updated_at }}</p>
+
+                        <a href="{% url "budget:item_update" item.id %}" class="card-link">Edit</a>
+                        <a href="{% url "budget:item_delete" item.id %}" class="card-link">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

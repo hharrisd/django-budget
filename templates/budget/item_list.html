@@ -1,0 +1,383 @@
+{% extends "_admin_base.html" %}
+{% block title %} Budget App {% endblock %}
+
+
+{% block content %}
+    <div class="container-fluid p-0">
+
+    <div class="row">
+        <div class="col-sm-6 col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col mt-0">
+                            <h5 class="card-title">Income</h5>
+                        </div>
+
+                        <div class="col-auto">
+                            <div class="stat text-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="feather feather-dollar-sign align-middle">
+                                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">${{ income_totals.monthly }}</h1>
+                    <div class="mb-0">
+                            <span class="badge badge-success-light"> <i
+                                    class="mdi mdi-arrow-bottom-right"></i> 3.65% </span>
+                        <span class="text-muted">Total monthly income</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col mt-0">
+                            <h5 class="card-title">Monthly Spends</h5>
+                        </div>
+
+                        <div class="col-auto">
+                            <div class="stat text-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="feather feather-shopping-bag align-middle">
+                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">${{ total_monthly_amount }}</h1>
+                    <div class="mb-0">
+                            <span class="badge badge-danger-light"> <i
+                                    class="mdi mdi-arrow-bottom-right"></i> -5.25% </span>
+                        <span class="text-muted">Total monthly outcome</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col mt-0">
+                            <h5 class="card-title">Cash Flow</h5>
+                        </div>
+
+                        <div class="col-auto">
+                            <div class="stat text-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="feather feather-activity align-middle">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">${{ monthly_cash_flow }}</h1>
+                    <div class="mb-0">
+                            <span class="badge badge-success-light"> <i
+                                    class="mdi mdi-arrow-bottom-right"></i> 4.65% </span>
+                        <span class="text-muted">Total monthly income - outcome</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Income distribution</h5>
+                    <h6 class="card-subtitle text-muted">How the sources of income are distributed monthly.</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart chart-sm">
+                        <canvas id="income_source"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Outcome types</h5>
+                    <h6 class="card-subtitle text-muted">How monthly expenses are distributed into essentials and not
+                        essentials.</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart chart-sm">
+                        <canvas id="outcome_types"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Outcome categories</h5>
+                    <h6 class="card-subtitle text-muted">How monthly expenses are distributed into categories.</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart chart-sm">
+                        <canvas id="outcome_categories"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <h1 class="h3 mb-3">Budget Info</h1>
+
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Income</h5>
+                    <div class="float-end">
+                        <div class="col-auto">
+                            <a type="button" class="btn btn-success btn-lg" href="{% url "budget:income_create" %}">
+                                Add income item
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                        <tr>
+                            <th>Concept</th>
+                            <th>Monthly</th>
+                            <th>Biannually</th>
+                            <th>Annually</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for income in income_list %}
+                            <tr>
+                                <td><a href="{{ income.get_absolute_url }}">{{ income.concept }}</a></td>
+                                <td>{{ income.monthly_amount|floatformat:2 }}</td>
+                                <td>{{ income.biannually_amount|floatformat:2 }}</td>
+                                <td>{{ income.annually_amount|floatformat:2 }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Outcome</h5>
+                    <div class="float-end">
+                        <div class="col-auto">
+                            <a type="button" class="btn btn-success btn-lg" href="{% url "budget:item_create" %}">
+                                Add outcome item
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Concept</th>
+                            <th>Is essential?</th>
+                            <th>Monthly</th>
+                            <th>Biannually</th>
+                            <th>Annually</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in item_list %}
+                            <tr>
+                                <td>{{ item.category.name }}</td>
+                                <td><a href="{{ item.get_absolute_url }}">{{ item.concept }}</a></td>
+                                <td>
+                                    {% if item.is_essential %}
+                                        <i class="align-middle" data-feather="check" style="color: #0b4b38"></i>
+                                    {% else %}
+                                        <i class="align-middle" data-feather="x" style="color: #8e0615"></i>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.monthly_amount|floatformat:2 }}</td>
+                                <td>{{ item.biannually_amount|floatformat:2 }}</td>
+                                <td>{{ item.annually_amount|floatformat:2 }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Doughnut chart
+
+            let data = [
+                {% for item in total_amount_by_category %}
+                    {
+                        category: '{{ item.category }}',
+                        totalAmount: {{ item.total_amount }},
+                    },
+                {% endfor %}
+            ];
+
+            let labels = data.map(function (item) {
+                return item.category;
+            });
+
+            let values = data.map(function (item) {
+                return item.totalAmount;
+            });
+            new Chart(document.getElementById("outcome_categories"), {
+                type: "doughnut",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(30, 30, 192, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(153, 103, 100, 0.5)',
+                            'rgba(153, 154, 200, 0.5)',
+                            'rgba(20, 205, 150, 0.5)',
+                        ],
+                        borderColor: "transparent"
+                    }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutoutPercentage:
+                        65,
+                    legend:
+                        {
+                            display: true
+                        }
+                }
+            })
+            ;
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Doughnut chart
+
+            let values = [
+                {{ total_amount_by_type.essential }}, {{ total_amount_by_type.no_essential }}
+            ];
+
+
+            new Chart(document.getElementById("outcome_types"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Essentials", "No essentials"],
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(30, 30, 192, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(153, 103, 100, 0.5)',
+                            'rgba(153, 154, 200, 0.5)',
+                            'rgba(20, 205, 150, 0.5)',
+                        ],
+                        borderColor: "transparent"
+                    }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutoutPercentage:
+                        65,
+                    legend:
+                        {
+                            display: true
+                        }
+                }
+            })
+            ;
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Doughnut chart
+
+            let data = [
+                {% for income_item in income_list %}
+                    {
+                        category: '{{ income_item.concept }}',
+                        totalAmount: '{{ income_item.monthly_amount }}',
+                    },
+                {% endfor %}
+            ];
+
+            let labels = data.map(function (item) {
+                return item.category;
+            });
+
+            let values = data.map(function (item) {
+                return item.totalAmount;
+            });
+            new Chart(document.getElementById("income_source"), {
+                type: "doughnut",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(30, 30, 192, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(153, 103, 100, 0.5)',
+                            'rgba(153, 154, 200, 0.5)',
+                            'rgba(20, 205, 150, 0.5)',
+                        ],
+                        borderColor: "transparent"
+                    }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutoutPercentage:
+                        65,
+                    legend:
+                        {
+                            display: true
+                        }
+                }
+            })
+            ;
+        });
+    </script>
+{% endblock %}
